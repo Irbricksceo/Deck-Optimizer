@@ -103,7 +103,21 @@ export default function DeckBuilder() {
     }
   }
 
-  function exportDeck() {
+  function saveDeck() {
+    const { cards: currentCards, customCategories: currentCats } = useDeckStore.getState()
+    const payload = {
+      version: 1,
+      customCategories: currentCats,
+      cards: currentCards.map(({ id, ...rest }) => rest),
+    }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url; a.download = 'deck.json'; a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  function exportPlainText() {
     const lines = cards.map((c) => `${c.count} ${c.name}`)
     const blob = new Blob([lines.join('\n')], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
@@ -126,10 +140,18 @@ export default function DeckBuilder() {
           {cards.length > 0 && (
             <>
               <button
-                onClick={exportDeck}
-                className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm text-white"
+                onClick={saveDeck}
+                className="px-3 py-1.5 rounded-lg bg-indigo-700 hover:bg-indigo-600 text-sm text-white"
+                title="Save deck as JSON (preserves categories and conditionals)"
               >
-                Export
+                Save Deck
+              </button>
+              <button
+                onClick={exportPlainText}
+                className="px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm text-white"
+                title="Export as plain text (for other tools)"
+              >
+                Export .txt
               </button>
               <button
                 onClick={clearDeck}

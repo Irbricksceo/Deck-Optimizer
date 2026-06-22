@@ -43,14 +43,48 @@ Example: *Noble Knight Medraut* has base category Brick, with a conditional rule
 
 ### 1. Deck Builder
 - **Manual entry**: type card name, set count (1–3), assign an initial category
-- **Paste import**: accepts YDK format (from EDOPro/YGOPro) or plain text (`3 Card Name` per line); imported cards default to Non-Engine
+- **Import**: click "Import List" to open the import modal, which supports:
+  - **Browse file**: pick a `.json` saved deck or a `.txt`/`.ydk` plain-text file from disk
+  - **Paste**: paste a deck list directly into the textarea
+  - Plain-text format: `3 Card Name` per line; imported cards default to Non-Engine
+  - JSON deck files: full fidelity restore (see Save/Load below)
+  - When adding a plain-text import to an existing deck, choose "Add to existing" or "Replace deck"
 - Card list displayed as a table; each row shows all base-category chips inline
 - **⚙ Card config modal**: click the gear icon on any card to:
   - Toggle base categories on/off (at least one must remain)
   - Add, edit, or remove conditional rules
 - Cards with active conditionals show a ⚡N badge indicating the number of rules
 - Running total of copies per base category (a card with multiple base categories contributes to each) and overall deck size
-- Export deck list as plain text
+
+#### Save / Load
+- **Save Deck** — downloads `deck.json` containing the full deck state: card names, counts, all base categories, all conditional rules, and custom category names. Card session-IDs are stripped; the format is human-readable JSON.
+- **Load** — loading a `.json` file in the import modal auto-detects it as a saved deck, shows a confirmation preview, and replaces the current deck atomically (cards + custom categories).
+- **Export .txt** — downloads a plain-text list (`3 Card Name` per line) for use with other tools (EDOPro, etc.). Does not preserve categories or conditionals.
+
+#### Save file format
+```json
+{
+  "version": 1,
+  "customCategories": ["Noble Knight"],
+  "cards": [
+    {
+      "name": "Noble Knight Medraut",
+      "count": 3,
+      "categories": ["Brick"],
+      "conditionals": [
+        {
+          "id": "...",
+          "conditionType": "category",
+          "conditionTarget": "Starter",
+          "conditionOp": "gte",
+          "conditionValue": 1,
+          "grantCategories": ["Starter"]
+        }
+      ]
+    }
+  ]
+}
+```
 
 ### 2. Hand Criteria
 - Define what counts as a "good hand" using simple count-based rules

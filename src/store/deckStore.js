@@ -44,6 +44,21 @@ export const useDeckStore = create((set, get) => ({
       })),
     }),
 
+  // Loads a full saved deck file (cards + custom categories), replacing current state.
+  loadDeck: ({ cards, customCategories: savedCustomCats }) =>
+    set({
+      cards: cards.map((c) => ({
+        name: c.name,
+        count: c.count,
+        categories: c.categories ?? ['Non-Engine'],
+        conditionals: (c.conditionals ?? []).map((cond) => ({ ...cond, id: nanoid() })),
+        id: nanoid(),
+      })),
+      customCategories: savedCustomCats ?? [],
+      simResults: null,
+      optimizerResults: null,
+    }),
+
   clearDeck: () => set({ cards: [], simResults: null, optimizerResults: null }),
 
   setHandSize: (size) => set({ handSize: size }),
